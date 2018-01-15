@@ -31,9 +31,20 @@ def from_json(path):
 
 def convert_dict(dictionary, in_list=False):
     '''convert dictionary of values to html view'''
-    count = 0
     result_string = ''
     for key, value in dictionary.items():
-        result_string += to_string(key, value)
-        count += 1
+        if isinstance(value, list):
+            result_string += convert_list(value, key)
+        else:
+            result_string += to_string(key, value)
     return '<li>' + result_string + '</li>' if in_list else result_string
+
+
+def convert_list(list_of_values, tag=''):
+    '''convert list of values to html view'''
+    result_string = '<ul>'
+    for elem in list_of_values:
+        if isinstance(elem, dict):
+            result_string += convert_dict(elem, True)
+    result_string += '</ul>'
+    return '<{}>'.format(tag) + result_string + '</{}>'.format(tag) if tag else result_string

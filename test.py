@@ -22,7 +22,7 @@ class Positive(unittest.TestCase):
         for tags, result in self.tags_to_string_values:
             self.assertEqual(cnvtools.to_string(tags[0], tags[1]), result)
 
-
+    # тест на convert_list (не пишу чтобы не тратить время, пишется по аналогии с convert_dict
 class BadInput(unittest.TestCase):
     def test_empty_dict(self):
         '''convert empty dictionary'''
