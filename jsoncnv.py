@@ -16,12 +16,16 @@ class JsonConverter:
     def convert_to_html(self):
         '''convert data from json to html'''
         if isinstance(self.data, list) and len(self.data) > 0:
+            print('<ul>')
             for elem in self.data:
                 if len(elem) != 2:  # в задаче не указано поведение при наличии более двух элементов в словаре
                     # Здесь нужно было бы еще проверять правильность ключей (то есть соответствие их 'title' и 'body
                     # Но будем считать, что их правильность гарантируется, чтобы не награмождать код лишними проверками
                     cnvtools.raise_exception('Incorrect JSON data value', ValueError)
-                print(cnvtools.convert_dict(elem, self.config))
+                print(cnvtools.convert_dict(elem, True))
+            print('</ul>')
+        elif isinstance(self.data, dict) and len(self.data) > 0:
+                print(cnvtools.convert_dict(self.data))
         else:
             cnvtools.raise_exception('Incorrect format of data in file', ValueError)
             # не указано что делать в случае если json данные являются словарем, не завернутым в список

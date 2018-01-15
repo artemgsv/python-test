@@ -29,12 +29,11 @@ def from_json(path):
     return data
 
 
-def convert_dict(dictionary, config=('head', 'body')):
+def convert_dict(dictionary, in_list=False):
     '''convert dictionary of values to html view'''
     count = 0
     result_string = ''
     for key, value in dictionary.items():
-        if config[count]:
-            result_string += to_string(key, value)
+        result_string += to_string(key, value)
         count += 1
-    return result_string
+    return '<li>' + result_string + '</li>' if in_list else result_string
