@@ -1,8 +1,8 @@
 from sys import exit
 from json import load
-'''  В данной ситуации думаю,что приемлимо импортировать только одну функцию из сторонних модулей, 
-     так как сам модуль является вспомогательным и небольшим по размеру
-'''
+'''В данной ситуации думаю,что приемлимо импортировать только одну функцию из сторонних модулей, 
+     так как сам модуль является вспомогательным и небольшим по размеру'''
+
 
 def raise_exception(message, error_type):
     '''raise exception with print error message'''
@@ -23,18 +23,18 @@ def from_json(path):
     with open(path, 'r') as f:
         try:
             data = load(f)
-        except ValueError as e:
+        except ValueError:
             print('Incorrect format of file')
             exit()
     return data
 
 
-def convert_dict(dict, config=('head', 'body')):
+def convert_dict(dictionary, config=('head', 'body')):
     '''convert dictionary of values to html view'''
     count = 0
-    str = ''
-    for key, value in dict.items():
+    result_string = ''
+    for value in dictionary.values():
         if config[count]:
-            str += to_string(config[count], value)
+            result_string += to_string(config[count], value)
         count += 1
-    return str
+    return result_string
