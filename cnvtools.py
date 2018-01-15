@@ -33,8 +33,8 @@ def convert_dict(dictionary, config=('head', 'body')):
     '''convert dictionary of values to html view'''
     count = 0
     result_string = ''
-    for value in dictionary.values():
+    for key, value in dictionary.items():
         if config[count]:
-            result_string += to_string(config[count], value)
+            result_string += to_string(key, value)
         count += 1
     return result_string
