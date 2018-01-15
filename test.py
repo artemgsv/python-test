@@ -8,10 +8,19 @@ class Positive(unittest.TestCase):
         ({}, '')
     )
 
+    tags_to_string_values = (
+        (('h1', 'body'), '<h1>body</h1>'),
+        (('p', 'Go'), '<p>Go</p>')
+    )
+
     def test_convert_dict(self):
         ''' convert dictionary to html'''
         for data, result in self.known_values:
             self.assertEqual(cnvtools.convert_dict(data, ('h1', 'p')), result)
+
+    def test_to_string(self):
+        for tags, result in self.tags_to_string_values:
+            self.assertEqual(cnvtools.to_string(tags[0], tags[1]), result)
 
 
 class BadInput(unittest.TestCase):
@@ -19,8 +28,6 @@ class BadInput(unittest.TestCase):
         '''convert empty dictionary'''
         self.assertRaises(ValueError, cnvtools.convert_dict, {})
 
-    def test_invalid_json_format(self):
-        self.assertRaises(ValueError, cnvtools.convert_dict, {[{}]})
 
 
     if __name__ == '__main__':
