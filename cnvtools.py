@@ -2,18 +2,10 @@ from sys import exit
 from json import load
 import re
 import html
+import custom_exception
 
 '''В данной ситуации думаю,что приемлимо импортировать только одну функцию из сторонних модулей, 
      так как сам модуль является вспомогательным и небольшим по размеру'''
-
-
-def raise_exception(message, error_type):
-    '''raise exception with print error message'''
-    try:
-        raise error_type('Incorrect JSON data value')
-    except error_type:
-        print(message)
-        exit()
 
 
 def to_string(tag, tagbody, tag_params=''):
@@ -42,7 +34,11 @@ def convert_dict(dictionary, in_list=False):
             current_tag = main_tag(key)
             if current_tag:
                 search_values = parse_key(key)
-                tag_params = make_tag_with_params(search_values)
+                try:
+                    tag_params = make_tag_with_params(search_values)
+                except custom_exception.CountIdError:
+                    print('Expect one id in html tag, but allowed more')
+                    exit()
                 result_string += to_string(current_tag, value, tag_params)
             else:
                 result_string += to_string(key, value)
@@ -72,33 +68,18 @@ def parse_key(key):
     return {'id': id, 'classes': classes}
 
 
-# по-хорошему нужно было вытянуть это регулярным выражением как классы и айди
-# соответственно для всех новых функций(main_tag, make_tag_with_params) нужны тесты но в задании написано лишь их описать, не тратя на них время
 def main_tag(tag):
     ''' identify the main tag among other info'''
-    index_point = tag.find('.')
-    index_lat = tag.find('#')
-    if index_point == -1:
-        index_point = float('inf')
-    if index_lat == -1:
-        index_lat = float('inf')
-
-    if index_point < index_lat:
-        spliter = '.'
-    else:
-        spliter = '#'
-    cur_tag = tag.split(spliter)[0]
-    if cur_tag == tag:
-        return None
-    else:
-        return cur_tag
+    tag_info = re.split('[.#]', tag)
+    current_tag = tag_info[0] if tag_info[0] != tag else None
+    return current_tag
 
 
 def make_tag_with_params(params):
     ''' convert css form of classes view to html form'''
     result_string = ''
     if len(params['id']) > 1:
-        raise_exception('More than one id at tag', ValueError)
+        raise custom_exception.CountIdError()
     for elem in params['id']:
         result_string += ' id="{}"'.format(elem)
     if len(params['classes']) > 0:
